@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CloudBridge360 ·
+        Migration Studio</title>
+    <style>
+        :root {
+            font-family: Inter, system-ui, Arial;
+            color: #15213a;
+            background: #f3f6fb
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0
+        }
+
+        header {
+            background: #101b35;
+            color: #fff;
+            padding: 24px max(22px, calc((100vw - 1100px)/2))
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 25px
+        }
+
+        header p {
+            margin: 5px 0 0;
+            color: #aab8d0
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 18px
+        }
+
+        .sub {
+            color: #72809a
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e1e7f0;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 8px 22px #15274608;
+            margin-bottom: 18px
+        }
+
+        h2 {
+            font-size: 17px;
+            margin: 0 0 12px
+        }
+
+        .pill {
+            display: inline-block;
+            border-radius: 24px;
+            background: #e9eef7;
+            padding: 7px 12px;
+            margin: 8px 0 16px;
+            font-size: 13px
+        }
+
+        .btn,
+        button {
+            background: #2563eb;
+            border: 0;
+            color: white;
+            padding: 11px 16px;
+            border-radius: 9px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            font: inherit;
+            display: inline-block
+        }
+
+        .secondary {
+            background: #192842
+        }
+
+        .ghost {
+            background: #e8efff;
+            color: #1749a8
+        }
+
+        button:disabled {
+            background: #aab4c5;
+            cursor: not-allowed
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px
+        }
+
+        .metric {
+            background: #f5f8fd;
+            padding: 16px;
+            border-radius: 12px
+        }
+
+        .metric b {
+            display: block;
+            font-size: 25px;
+            margin-top: 5px
+        }
+
+        .metric small {
+            color: #66758f
+        }
+
+        progress {
+            width: 100%;
+            height: 18px;
+            accent-color: #2563eb;
+            margin-top: 12px
+        }
+
+        .file {
+            border-bottom: 1px solid #edf1f6;
+            padding: 10px 0
+        }
+
+        .file:last-child {
+            border: 0
+        }
+
+        .filehead {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            overflow-wrap: anywhere
+        }
+
+        .file progress {
+            height: 8px;
+            margin: 5px 0
+        }
+
+        .log {
+            background: #0d1930;
+            color: #dbe8ff;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 250px;
+            overflow: auto;
+            white-space: pre-wrap;
+            font: 12px/1.6 ui-monospace, monospace
+        }
+
+        .error {
+            color: #c43a48
+        }
+
+        .status {
+            font-weight: 600
+        }
+
+        footer {
+            color: #72809a;
+            font-size: 12px;
+            margin: 24px 0
+        }
+
+        @media(max-width:600px) {
+            .card {
+                padding: 16px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>☁ CloudBridge360</h1>
+        <p>OneDrive → Google
+            Photos · Secure local migration
+            studio</p>
+    </header>
+    <main>
+        <h1>Move your memories,
+            securely.</h1>
+        <p class="sub">Stream photos and videos from
+            OneDrive to Google Photos. Source files are never
+            deleted.</p>
+        <section class="cards">
+            <div class="card">
+                <h2>Microsoft OneDrive</h2><span class="pill" id="ms">Checking…</span><br><a class="btn"
+                    href="/auth/microsoft">Connect Microsoft</a>
+            </div>
+            <div class="card">
+                <h2>Google Photos</h2><span class="pill" id="gg">Checking…</span><br><a class="btn"
+                    href="/auth/google">Connect
+                    Google</a>
+            </div>
+        </section>
+        <section class="card">
+            <h2>Migration workspace</h2>
+            <p class="sub" id="scanResult">Connect both accounts to begin.</p>
+            <div class="actions"><button id="scan">1. Scan
+                    OneDrive</button><button id="migrate" class="secondary" disabled>2. Start migration</button><button
+                    id="retry" class="ghost" disabled>Retry failed</button><a class="btn ghost"
+                    href="/api/report.csv">Download CSV
+                    report</a></div>
+        </section>
+        <section class="card">
+            <h2>Live
+                migration progress</h2>
+            <div class="metrics">
+                <div class="metric"><small>Imported</small><b id="done">0</b></div>
+                <div class="metric"><small>Skipped</small><b id="skipped">0</b></div>
+                <div class="metric"><small>Failed</small><b id="failed">0</b></div>
+                <div class="metric"><small>Processed</small><b id="processed">0 / 0</b></div>
+            </div><progress id="bar" max="100" value="0"></progress>
+            <p id="stats" class="sub">No migration started.</p>
+            <h2>Active
+                transfers</h2>
+            <div id="active" class="sub">No active
+                transfers.</div>
+        </section>
+        <section class="card">
+            <h2>Recent
+                events and errors</h2>
+            <div id="events" class="log">No events
+                yet.</div>
+            <div id="errors" class="error"></div>
+        </section>
+        <footer>Local-only · The
+            server stores OAuth tokens and migration metadata in
+            .data/state.json. Protect this folder and do not publish
+            it.</footer>
+    </main>
+    <script>
+        const $ = id => document.getElementById(id); let connected = false, scanned = 0, lastJob = null, notified = null;
+        async function request(url, options) { const r = await fetch(url, options); const text = await r.text(); let j; try { j = JSON.parse(text) } catch { throw Error(text.slice(0, 200) || `HTTP ${r.status}`) } if (!r.ok) throw Error(j.error || `HTTP ${r.status}`); return j }
+        function size(bytes) { if (!bytes) return '0 B'; const u = ['B', 'KB', 'MB', 'GB', 'TB']; let i = 0; while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++ } return `${bytes.toFixed(i ? 2 : 0)} ${u[i]}` }
+        function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
+        async function refresh() { try { const s = await request('/api/status'); connected = s.microsoft && s.google; scanned = s.scanned; $('ms').textContent = s.microsoft ? '✓ Connected' : 'Not connected'; $('gg').textContent = s.google ? '✓ Connected' : 'Not connected'; $('scan').disabled = !connected || !!s.job?.running; $('migrate').disabled = !connected || !scanned || !!s.job?.running; $('retry').disabled = !connected || !scanned || !!s.job?.running || !s.job?.failed; if (s.job) { const j = s.job; lastJob = j; const processed = j.done + j.failed + j.skipped; $('done').textContent = j.done; $('skipped').textContent = j.skipped; $('failed').textContent = j.failed; $('processed').textContent = `${processed} / ${j.total}`; $('bar').value = j.total ? processed / j.total * 100 : 0; $('stats').textContent = `${j.running ? '🔄 Running' : '✓ Stopped'} · ${j.total ? Math.round(processed / j.total * 100) : 0}% processed · ${j.pending ?? Math.max(0, j.total - processed)} pending${j.interrupted ? ' · Interrupted by server restart' : ''}`; const active = Object.values(j.active || {}); $('active').innerHTML = active.length ? active.map(f => `<div class="file"><div class="filehead"><strong>${escapeHtml(f.name)}</strong><span>${escapeHtml(f.stage)} · ${size(f.bytes)} / ${size(f.size)}</span></div><progress max="100" value="${f.size ? 100 * f.bytes / f.size : 0}"></progress></div>`).join('') : 'No active transfers.'; if (!j.running && j.finishedAt && notified !== j.id) { notified = j.id; if (j.failed) alert(`Migration finished: ${j.done} imported, ${j.failed} failed. Check the error log.`); else alert(`Migration finished: ${j.done} imported, ${j.skipped} skipped.`) } } $('events').textContent = (s.events || []).slice().reverse().map(e => `[${new Date(e.time).toLocaleTimeString()}] ${e.type} ${e.name}: ${e.message}`).join('\n') || 'No events yet.'; $('errors').textContent = (s.job?.errors || []).slice(-10).map(e => `${e.name}: ${e.error}`).join('\n'); if (!s.job && scanned) $('scanResult').textContent = `${scanned} scanned media files available.` } catch (e) { $('stats').textContent = e.message } }
+        $('scan').onclick = async () => { try { $('scanResult').textContent = 'Scanning OneDrive folders…'; $('scan').disabled = true; const d = await request('/api/scan'); scanned = d.count; $('scanResult').textContent = `Found ${d.count} media files (${size(d.bytes)}). Ready to migrate.`; $('migrate').disabled = !d.count } catch (e) { $('scanResult').textContent = e.message } finally { refresh() } };
+        async function start(retryOnly) { if (!confirm(retryOnly ? 'Retry previously failed files?' : 'Start migration? Existing successful records will be skipped.')) return; try { const d = await request('/api/migrate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ retryOnly }) }); notified = null; alert(`Migration started for ${d.total} files.`); refresh() } catch (e) { alert(e.message) } } $('migrate').onclick = () => start(false); $('retry').onclick = () => start(true); refresh(); setInterval(refresh, 1500);
+    </script>
+</body>
+
+</html>
